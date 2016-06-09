@@ -1,9 +1,9 @@
 body {
-  padding-top: 50px;
+  padding-top: 60px;
+  background-color: 	#D3D3D3;
 }
-.starter-template {
+.ptemp {
   padding: 40px 15px;
-  text-align: center;
 }
 a {
   color: #00B7FF;

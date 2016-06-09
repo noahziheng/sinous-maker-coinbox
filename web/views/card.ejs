@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title><%= title %></title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/stylesheets/style.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="/javascripts/ie-emulation-modes-warning.js"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#"><%= title %></a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">首页</a></li>
+            <li><a href="/admin">管理</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+
+        <div class="col-md-3-offset-2 well ptemp" style="text-align:center;">
+          <h3><%=card.cardno%>    <%=card.cardtype%></h3>
+          <h3>余额：  <%=card.cardval%> 元</h3>
+          <h3>识别ID：  <%=card.cardid%> </h3>
+        </div>
+        <!--Panel Profile Edit-->
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">卡信息修改</h3>
+          </div>
+          <div class="panel-body">
+            <form class="form-inline" action="/card/set/<%=card.cardid%>" method="POST">
+              <div class="form-group">
+                <label for="cardtype">卡片类型</label>
+                <select class="form-control" name="cardtype" id="cardtype">
+                  <option>请选择</option>
+                  <% cardtypes.forEach(function(c,index){ %>
+                    <option value="<%=c.id%>" <%if(card.cardtype==c.name){%>selected<%}%>><%=c.name%></option>
+                  <% }) %>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="cardno">卡号</label>
+                <input type="text" class="form-control" name="cardno" id="cardno" value="<%=card.cardno%>">
+              </div>
+              <div class="form-group">
+                <label for="cardid">识别ID</label>
+                <input type="text" class="form-control" name="cardid" id="cardid" value="<%=card.cardid%>">
+              </div>
+              <input type="hidden" name="cardval" value="<%=card.cardval%>">
+              <input type="hidden" name="user" value="<%=card.user%>">
+              <button type="submit" class="btn btn-primary">提交</button>
+            </form>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <!--Panel Add Edit-->
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h3 class="panel-title">卡充值</h3>
+              </div>
+              <div class="panel-body">
+                <form class="form-inline" action="/card/pay/<%=card.cardid%>" method="POST">
+                  <div class="form-group">
+                    <label for="inval">金额</label>
+                    <input type="text" class="form-control" name="inval" id="inval" value="0">
+                  </div>
+                  <button type="submit" class="btn btn-primary">提交</button>
+                </form>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <!--Panel Add Edit-->
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h3 class="panel-title">卡支付</h3>
+              </div>
+              <div class="panel-body">
+                <form class="form-inline" action="/card/pay/<%=card.cardid%>" method="POST">
+                  <div class="form-group">
+                    <label for="outval">金额</label>
+                    <input type="text" class="form-control" name="outval" id="outval" value="0">
+                  </div>
+                  <button type="submit" class="btn btn-primary">提交</button>
+                </form>
+              </div>
+            </div>
+          </div>
+          </div>
+
+          <!--Panel Card List-->
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">使用记录</h3>
+            </div>
+            <% if(logs.length){ %>
+            <!-- Table -->
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>操作类型</th>
+                    <th>卡ID</th>
+                    <th>操作值</th>
+                    <th>余额</th>
+                    <th>操作时间</th>
+                    <th>终端类型</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% logs.forEach(function(c,index){ %>
+                    <tr>
+                      <th scope="row"><%=index+1%></th>
+                      <td><%=c.type%></td>
+                      <td><%=c.cardid%></td>
+                      <td><%=c.val%></td>
+                      <td><%=c.rval%></td>
+                      <td><%=c.time%></td>
+                      <td><%=c.client%></td>
+                    </tr>
+                  <% }) %>
+                </tbody>
+              </table>
+            <% }else{ %>
+              <div class="panel-body">
+                <h3>暂无记录</h3>
+              </div>
+            <% } %>
+          </div>
+
+        </div>
+
+    </div><!-- /.container -->
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="/javascripts/main.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="/javascripts/ie10-viewport-bug-workaround.js"></script>
+  </body>
+</html>
+

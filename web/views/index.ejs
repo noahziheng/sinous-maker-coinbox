@@ -44,26 +44,197 @@
           <ul class="nav navbar-nav">
             <li class="active"><a href="#">首页</a></li>
             <li><a href="/admin">管理</a></li>
-          </ul>	
+          </ul>
         </div><!--/.nav-collapse -->
       </div>
     </nav>
 
     <div class="container">
 
-      <div class="starter-template">
-        <h1>Bootstrap starter template</h1>
-        <p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text and a mostly barebones HTML document.</p>
-      </div>
+
+      <% if(!user){ %>
+        <div class="col-md-3-offset-2 well ptemp" style="text-align:center;">
+          <h1>欢迎！</h1>
+          <p class="lead">这是2016年中美青年创客大赛天津赛区作品 -- 零钱电子化回收箱的附属在线服务系统！</p>
+          <p class="lead">请登录或注册</p>
+          <p><button id="btn-login" type="button" class="btn btn-default btn-lg" data-toggle="modal" data-target="#loginModal">登录</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button id="btn-reg" type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#regModal">注册</button></p>
+        </div>
+      <% } else { %>
+        <div class="col-md-3-offset-2 well ptemp">
+          <h1>欢迎您，<%=user.realname%>！<a id="btn-logout" href="/user/logout" class="btn btn-primary btn-lg">登出系统</a></h1>
+          <p class="lead">这是2016年中美青年创客大赛天津赛区作品 -- 零钱电子化回收箱的附属在线服务系统！</p>
+        </div>
+        <!--Panel Profile Edit-->
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">个人信息修改</h3>
+          </div>
+          <div class="panel-body">
+            <form class="form-inline" action="/user/reg" method="POST">
+              <div class="form-group">
+                <label for="newpass">密码</label>
+                <input type="password" class="form-control" name="password" id="newpass" value="<%=user.password %>">
+              </div>
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" id="edit-showpass"> 显示密码
+                </label>
+              </div>
+              <div class="form-group">
+                <label for="reg-realname">真实姓名</label>
+                <input type="text" class="form-control" name="realname" id="reg-realname" value="<%=user.realname %>">
+              </div>
+              <button type="submit" class="btn btn-primary">提交</button>
+            </form>
+          </div>
+        </div>
+
+        <!--Panel Card Add-->
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">绑定卡片</h3>
+          </div>
+          <div class="panel-body">
+            <form class="form-inline" action="/card/add" method="POST">
+              <div class="form-group">
+                <label for="cardtype">卡片类型</label>
+                <select class="form-control" name="cardtype" id="cardtype">
+                  <option>请选择</option>
+                  <% cardtypes.forEach(function(c,index){ %>
+                    <option value="<%=c.id%>"><%=c.name%></option>
+                  <% }) %>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="cardno">卡号</label>
+                <input type="text" class="form-control" name="cardno" id="cardno">
+              </div>
+              <div class="form-group">
+                <label for="cardid">识别ID</label>
+                <input type="text" class="form-control" name="cardid" id="cardid">
+              </div>
+              <div class="form-group">
+                <label for="cardid">当前余额</label>
+                <input type="text" class="form-control" name="cardval" id="cardval" value="0">
+              </div>
+              <button type="submit" class="btn btn-primary">提交</button>
+            </form>
+          </div>
+        </div>
+
+        <!--Panel Card List-->
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">卡片列表</h3>
+          </div>
+          <% if(user.card.length){ %>
+          <!-- Table -->
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>卡类型</th>
+                  <th>卡编号</th>
+                  <th>识别ID</th>
+                  <th>余额</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% user.card.forEach(function(c,index){ %>
+                  <tr onclick="window.location.href='/card/profile/<%=c.cardid%>';" style="cursor:pointer;">
+                    <th scope="row"><%=index+1%></th>
+                    <td><%=c.cardtype%></td>
+                    <td><%=c.cardno%></td>
+                    <td><%=c.cardid%></td>
+                    <td><%=c.cardval%></td>
+                    <td><a href="/card/del/<%=c.cardid%>" class="btn btn-danger"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          <% }else{ %>
+            <div class="panel-body">
+              <h3>您尚未添加卡片</h3>
+            </div>
+          <% } %>
+        </div>
+      <% } %>
 
     </div><!-- /.container -->
 
+<% if(!user){ %>
+<!-- Modal -->
+<div class="modal fade" id="loginModal" role="dialog" aria-labelledby="loginModalLabel">
+  <form action="/user/login" method="POST">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="loginModalLabel">用户登录</h4>
+      </div>
+      <div class="modal-body">
+          <div class="form-group">
+            <label for="login-username">用户名</label>
+            <input type="text" class="form-control" name="username" id="login-username" placeholder="User">
+          </div>
+          <div class="form-group">
+            <label for="login-password">密码</label>
+            <input type="password" class="form-control" name="password" id="login-password" placeholder="Password">
+          </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <button type="submit" class="btn btn-primary">登录</button>
+      </div>
+    </div>
+  </div>
+</form>
+</div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="regModal" role="dialog" aria-labelledby="regModalLabel">
+  <form action="/user/reg" method="POST">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="regModalLabel">用户注册</h4>
+      </div>
+      <div class="modal-body">
+          <div class="form-group">
+            <label for="reg-username">用户名</label>
+            <input type="text" class="form-control" name="username" id="reg-username" placeholder="User">
+          </div>
+          <div class="form-group">
+            <label for="reg-password">密码</label>
+            <input type="password" class="form-control" name="password" id="reg-password" placeholder="Password">
+          </div>
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" id="reg-showpass"> 显示密码
+            </label>
+          </div>
+          <div class="form-group">
+            <label for="reg-realname">真实姓名</label>
+            <input type="text" class="form-control" name="realname" id="reg-realname" placeholder="Realname">
+          </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <button type="submit" class="btn btn-primary">提交</button>
+      </div>
+    </div>
+  </div>
+</form>
+</div>
+<% } %>
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
     <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="/javascripts/main.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="/javascripts/ie10-viewport-bug-workaround.js"></script>
   </body>

@@ -39,7 +39,7 @@
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li><a href="#">首页</a></li>
+            <li><a href="/">首页</a></li>
             <li class="active"><a href="/admin">管理</a></li>
           </ul>
         </div><!--/.nav-collapse -->
@@ -48,10 +48,64 @@
 
     <div class="container">
 
-      <div class="starter-template">
-        <h1>Bootstrap starter template</h1>
-        <p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text and a mostly barebones HTML document.</p>
-      </div>
+      <!--Panel User List-->
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">用户列表</h3>
+          </div>
+          <!-- Table -->
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>用户名</th>
+                <th>真实姓名</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% users.forEach(function(c,index){ %>
+                <tr onclick="window.location.href='/user/profile/<%=c.username%>';" style="cursor:pointer;">
+                  <th scope="row"><%=index+1%></th>
+                  <td><%=c.username%></td>
+                  <td><%=c.realname%></td>
+                  <td><a href="/user/del/<%=c.username%>" class="btn btn-danger"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+        <!--Panel Card List-->
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">注册卡列表</h3>
+          </div>
+          <!-- Table -->
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                  <th>#</th>
+                  <th>卡类型</th>
+                  <th>卡编号</th>
+                  <th>识别ID</th>
+                  <th>余额</th>
+                  <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% cards.forEach(function(c,index){ %>
+                <tr onclick="window.location.href='/card/profile/<%=c.cardid%>';" style="cursor:pointer;">
+                  <th scope="row"><%=index+1%></th>
+                    <td><%=c.cardtype%></td>
+                    <td><%=c.cardno%></td>
+                    <td><%=c.cardid%></td>
+                    <td><%=c.cardval%></td>
+                    <td><a href="/card/del/<%=c.cardid%>" class="btn btn-danger"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
 
     </div><!-- /.container -->
 

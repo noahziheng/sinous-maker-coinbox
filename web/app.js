@@ -4,6 +4,8 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var $ = require("mongous").Mongous;
+$().open("121.42.180.144");
 
 var routes = require('./routes/index');
 var user = require('./routes/user');
@@ -20,7 +22,7 @@ app.set('view engine', 'ejs');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(cookieParser('coinbox_'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
