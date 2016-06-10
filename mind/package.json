@@ -1,0 +1,17 @@
+{
+  "name": "mind",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "forever -w ./index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "brain": "^0.7.0",
+    "dateformat": "^1.0.12",
+    "mongous": "^0.2.7"
+  }
+}
