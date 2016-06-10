@@ -4,6 +4,7 @@ var fs = require('fs');
 var $ = require("mongous").Mongous;
 var cardtypes=require('./cardtypes');
 $().open("121.42.180.144");
+process.env.TZ = "Asia/Shanghai";
 
 var HOST = '0.0.0.0';
 var PORT = 8888;
@@ -85,7 +86,6 @@ function server() {
             }else{
                 console.log('DATA ' + sock.remoteAddress + ': ' + odata);
             }
-            process.env.TZ = "Asia/Shanghai";
             var curDate = new Date();
             var hour=charLeftAll(curDate.getUTCHours(),true);
             var min=charLeftAll(curDate.getUTCMinutes(),false);
