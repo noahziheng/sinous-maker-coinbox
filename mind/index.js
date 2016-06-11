@@ -76,7 +76,7 @@ function server() {
                 });
                 console.log('DATA ' + sock.remoteAddress + ": "+output);
             }else if(data[0]=='C'){
-                $('coinbox.cards').find({cardid: data[1]},function (a) {
+                $('coinbox.cards').find({cardid: data[1].replace(/\n/g,'')},function (a) {
                     console.log(a);
                     if (a.numberReturned==0) {
                         sock.write('E');
@@ -85,7 +85,7 @@ function server() {
                     }
                 });
             }else if(data[0]=='T'){
-                minddata.push({input:[parseInt(data[1]),parseInt(data[2])],output:[parseFloat(data[3])]});
+                minddata.push({input:[parseInt(data[1].replace(/\n/g,'')),parseInt(data[2].replace(/\n/g,''))],output:[parseFloat(data[3].replace(/\n/g,''))]});
                 savemind();
                 sock.write('A');
                 console.log('DATA ' + sock.remoteAddress + ":  "+odata);
