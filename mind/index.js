@@ -72,28 +72,27 @@ function server() {
                         client:"终端投币",
                         time:require('dateformat')(new Date(),"isoDateTime")
                     });
-                    $('coinbox.users').find({username: a.documents[0].user},function (r) {
-                        addstr=output+':'+a.documents[0].cardval+'H'+r.documents[0].realname+':'+cardtypes[a.documents[0].cardtype].name+':'+a.documents[0].cardno+'E';
-                        sock.write(addstr);
-                    });
+                    sock.write('G'+output+':'+a.documents[0].cardval+'H');
                 });
                 console.log('DATA ' + sock.remoteAddress + ": "+output);
+            }else if(data[0]=='C'){
+                $('coinbox.cards').find({cardid: data[1]},function (a) {
+                    console.log(a);
+                    if (a.numberReturned==0) {
+                        sock.write('E');
+                    }else{
+                        sock.write('G'+a.documents[0].cardtype+':'+a.documents[0].cardval+':'+a.documents[0].cardno+'E');
+                    }
+                });
             }else if(data[0]=='T'){
                 minddata.push({input:[parseInt(data[1]),parseInt(data[2])],output:[parseFloat(data[3])]});
                 savemind();
-                addstr='A';
+                sock.write('A');
                 console.log('DATA ' + sock.remoteAddress + ":  "+odata);
             }else{
                 console.log('DATA ' + sock.remoteAddress + ': ' + odata);
+                sock.write('G');
             }
-            var curDate = new Date();
-            var hour=charLeftAll(curDate.getUTCHours(),true);
-            var min=charLeftAll(curDate.getUTCMinutes(),false);
-            var sec=charLeftAll(curDate.getUTCSeconds(),false);
-            var year=curDate.getFullYear();
-            var month=curDate.getMonth()+1;
-            var day=curDate.getDate();
-            sock.write('G'+hour+':'+min+':'+sec+'T'+year+':'+month+':'+day+'I'+addstr);
         });
 
         // 为这个socket实例添加一个"close"事件处理函数
