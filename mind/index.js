@@ -29,7 +29,7 @@ function closest(arr, num){
 }
 
 function savemind() {
-    fs.writeFileSync('mind.json', JSON.stringify(minddata));
+    fs.writeFileSync('./data/mind.json', JSON.stringify(minddata));
 }
 savemind();
 
